@@ -1,30 +1,7 @@
 [
   {
     "vendor": "WASAC",
-    "date": "2023-10-01",
-    "currency": "FRW",
-    "total": 11536,
-    "lineItems": [
-      {
-        "name": "Current Invoice",
-        "quantity": 1,
-        "price": 106.86
-      },
-      {
-        "name": "Balance",
-        "quantity": 1,
-        "price": 9.37
-      }
-    ],
-    "confidence": "medium",
-    "notes": "The date is assumed as the current month and year since it is not explicitly stated on the receipt.",
-    "id": "rcpt_ca20a5df-0f0b-4782-99ea-177b24a8751a",
-    "imagePath": "images/receipt.jpg",
-    "extractedAt": "2026-07-22T17:35:29.301Z"
-  },
-  {
-    "vendor": "WASAC",
-    "date": "2026-07-22",
+    "date": "2026-07-23",
     "currency": "RWF",
     "total": 11536,
     "lineItems": [
@@ -40,15 +17,15 @@
       }
     ],
     "confidence": "medium",
-    "notes": "The date is assumed as no date is visible on the receipt.",
-    "id": "rcpt_63a08beb-cb34-4590-b31e-b5ee4560cdd0",
+    "notes": "The date is assumed as today's date since no date is visible on the receipt.",
+    "id": "rcpt_57ca57bd-cec5-4ad8-b716-9629d608769c",
     "imagePath": "images/receipt.jpg",
-    "extractedAt": "2026-07-22T17:58:41.298Z"
+    "extractedAt": "2026-07-23T08:26:14.855Z"
   },
   {
     "vendor": "LOUIS VUITTON",
     "date": "2020-05-20",
-    "currency": "USD",
+    "currency": "UNKNOWN",
     "total": 21600,
     "lineItems": [
       {
@@ -58,9 +35,9 @@
       }
     ],
     "confidence": "high",
-    "notes": "The receipt indicates a total amount of 21600, but the currency is not explicitly stated. Assuming USD based on typical luxury retail transactions.",
-    "id": "rcpt_b4dcb15e-2f33-4d48-8d95-1d03261d7021",
+    "notes": "The currency is not specified on the receipt.",
+    "id": "rcpt_23eb78d5-3942-4c43-b526-21d2422ccadc",
     "imagePath": "images/receipt.jpeg",
-    "extractedAt": "2026-07-22T18:00:32.292Z"
+    "extractedAt": "2026-07-23T08:26:28.444Z"
   }
 ]

@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:16
+    container_name: receiptly-db
+    environment:
+      POSTGRES_USER: receiptly
+      POSTGRES_PASSWORD: receiptly
+      POSTGRES_DB: receiptly
+    # Host 5434 -> container 5432. 5432 and 5433 are already taken on this machine
+    # (5433 is Vidya's Postgres), so Receiptly gets the next free port.
+    ports:
+      - "5434:5432"
+    volumes:
+      - receiptly_pgdata:/var/lib/postgresql/data
+
+volumes:
+  receiptly_pgdata:
