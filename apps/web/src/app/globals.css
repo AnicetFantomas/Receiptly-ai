@@ -19,8 +19,8 @@ body {
 }
 
 /* ── Ambient background ─────────────────────────────────────
-   Two soft colour fields plus a fine grid, fixed behind everything. Gives the
-   app depth without any imagery. */
+   White ground with two very soft colour washes at the top and a fine grid.
+   Kept faint — on light backgrounds this reads as tint, not decoration. */
 .bg-ambient {
   position: fixed;
   inset: 0;
@@ -28,16 +28,16 @@ body {
   overflow: hidden;
   background:
     radial-gradient(
-      70rem 40rem at 12% -8%,
-      rgba(245, 158, 11, 0.13),
+      70rem 40rem at 10% -10%,
+      rgba(245, 158, 11, 0.1),
       transparent 60%
     ),
     radial-gradient(
-      60rem 36rem at 92% 6%,
-      rgba(56, 132, 255, 0.11),
+      58rem 34rem at 94% -4%,
+      rgba(56, 132, 255, 0.08),
       transparent 62%
     ),
-    linear-gradient(180deg, #0b0f14 0%, #0a0e13 60%, #090d11 100%);
+    linear-gradient(180deg, #ffffff 0%, #fcfdfe 55%, #f7f9fb 100%);
 }
 
 .bg-ambient::after {
@@ -45,33 +45,29 @@ body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.045) 1px, transparent 1px),
+    linear-gradient(to right, rgba(15, 23, 42, 0.045) 1px, transparent 1px);
   background-size: 56px 56px;
   /* Fade the grid out toward the bottom so it never competes with content. */
   -webkit-mask-image: radial-gradient(
-    58rem 42rem at 50% 0%,
-    #000 25%,
-    transparent 78%
+    58rem 40rem at 50% 0%,
+    #000 20%,
+    transparent 75%
   );
-  mask-image: radial-gradient(
-    58rem 42rem at 50% 0%,
-    #000 25%,
-    transparent 78%
-  );
+  mask-image: radial-gradient(58rem 40rem at 50% 0%, #000 20%, transparent 75%);
 }
 
 @layer components {
   /* ── Surfaces ───────────────────────────────────────────── */
   .panel {
-    @apply rounded-xl2 border border-edge bg-panel shadow-lift backdrop-blur-xl;
+    @apply rounded-xl2 border border-edge bg-panel shadow-lift;
   }
   .panel-hover {
-    @apply transition-all duration-300 hover:border-edgehi hover:bg-panelhi;
+    @apply transition-all duration-300 hover:-translate-y-0.5
+           hover:border-edgehi hover:shadow-liftup;
   }
 
-  /* Gradient hairline along the top edge — the detail that makes a dark panel
-     read as lit rather than flat. */
+  /* Subtle top highlight so panels read as lit from above. */
   .panel-lit {
     position: relative;
   }
@@ -84,7 +80,7 @@ body {
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 255, 255, 0.22),
+      rgba(15, 23, 42, 0.08),
       transparent
     );
   }
@@ -96,31 +92,34 @@ body {
            active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn text-base;
-    background: linear-gradient(180deg, #fbbf24, #f59e0b);
-    color: #221603;
-    box-shadow: 0 6px 20px -8px rgba(245, 158, 11, 0.6);
+    @apply btn;
+    background: linear-gradient(180deg, #f59e0b, #d97706);
+    color: #ffffff;
+    box-shadow: 0 1px 2px rgba(180, 83, 9, 0.25),
+      0 8px 20px -8px rgba(217, 119, 6, 0.5);
   }
   .btn-primary:hover {
-    box-shadow: 0 10px 28px -8px rgba(245, 158, 11, 0.75);
-    filter: brightness(1.06);
+    filter: brightness(1.05);
+    box-shadow: 0 2px 4px rgba(180, 83, 9, 0.25),
+      0 12px 26px -8px rgba(217, 119, 6, 0.6);
   }
   .btn-ghost {
-    @apply btn border border-edge text-mid hover:border-edgehi hover:text-hi;
+    @apply btn border border-edge bg-white text-mid shadow-sm
+           hover:border-edgehi hover:text-hi;
   }
   .btn-danger {
-    @apply btn border border-transparent text-lo hover:border-flag/40 hover:text-flag;
+    @apply btn border border-transparent text-lo hover:bg-flagdim hover:text-flag;
   }
 
   /* ── Inputs ─────────────────────────────────────────────── */
   .input {
-    @apply w-full rounded-xl border border-edge bg-black/25 px-3 py-2.5 text-sm
-           text-hi outline-none transition-all duration-200
-           placeholder:text-lo focus:border-amber-500/60
-           focus:ring-4 focus:ring-amber-500/10;
+    @apply w-full rounded-xl border border-edge bg-white px-3 py-2.5 text-sm
+           text-hi shadow-sm outline-none transition-all duration-200
+           placeholder:text-lo focus:border-amber-500
+           focus:ring-4 focus:ring-amber-500/15;
   }
   select.input {
-    @apply cursor-pointer appearance-none bg-base2;
+    @apply cursor-pointer appearance-none;
   }
 
   /* ── Badges ─────────────────────────────────────────────── */
@@ -129,18 +128,18 @@ body {
            text-[0.6875rem] font-semibold tracking-wide;
   }
   .badge-flag {
-    @apply badge bg-flagdim text-flag ring-1 ring-inset ring-flag/25;
+    @apply badge bg-flagdim text-flag ring-1 ring-inset ring-flag/20;
   }
   .badge-ok {
-    @apply badge bg-okdim text-ok ring-1 ring-inset ring-ok/25;
+    @apply badge bg-okdim text-ok ring-1 ring-inset ring-ok/20;
   }
   .badge-mute {
-    @apply badge bg-white/5 text-mid ring-1 ring-inset ring-white/10;
+    @apply badge bg-base2 text-mid ring-1 ring-inset ring-edge;
   }
 
   /* ── Skeleton shimmer ───────────────────────────────────── */
   .skeleton {
-    @apply relative overflow-hidden rounded-lg bg-white/5;
+    @apply relative overflow-hidden rounded-lg bg-base2;
   }
   .skeleton::after {
     content: "";
@@ -148,14 +147,14 @@ body {
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 255, 255, 0.07),
+      rgba(255, 255, 255, 0.85),
       transparent
     );
     animation: shimmer 1.8s infinite;
   }
 
-  /* Dotted leader between an item and its price — the one receipt cue kept,
-     because it genuinely aids scanning long item lists. */
+  /* Dotted leader between an item and its price — kept because it genuinely
+     helps the eye track across a long item list. */
   .leader {
     @apply flex items-baseline gap-3;
   }
@@ -164,7 +163,7 @@ body {
     height: 1px;
     background-image: radial-gradient(
       circle,
-      rgba(255, 255, 255, 0.22) 1px,
+      rgba(15, 23, 42, 0.22) 1px,
       transparent 1.2px
     );
     background-size: 7px 1px;

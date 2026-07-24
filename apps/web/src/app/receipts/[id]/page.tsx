@@ -304,7 +304,7 @@ export default function ReceiptDetailPage({
                       ],
                     })
                   }
-                  className="text-xs font-medium text-amber-400 transition-colors hover:text-amber-300"
+                  className="text-xs font-medium text-amber-600 transition-colors hover:text-amber-700"
                 >
                   + Add item
                 </button>
@@ -523,7 +523,7 @@ export default function ReceiptDetailPage({
                   }
                 />
                 {receipt.notes && (
-                  <p className="rounded-xl border border-edge bg-black/20 p-3.5 text-xs leading-relaxed text-mid">
+                  <p className="rounded-xl border border-edge bg-base2 p-3.5 text-xs leading-relaxed text-mid">
                     <span className="font-medium text-hi">Note · </span>
                     {receipt.notes}
                   </p>

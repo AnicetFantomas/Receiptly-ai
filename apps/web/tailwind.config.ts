@@ -1,36 +1,37 @@
 import type { Config } from "tailwindcss";
 
-// A real product surface: deep slate ground, layered translucent panels, and a
-// warm amber accent that carries the "paper/receipt" warmth without costume.
+// Light product surface: white ground, soft neutral panels, warm amber accent.
+// Depth comes from real shadows and hairline borders rather than glow.
 const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       colors: {
-        // Ground: near-black with a blue cast, so accents glow against it.
-        base: "#0b0f14",
-        base2: "#0f151c",
-        // Panels sit above the ground; borders are light at very low alpha.
-        panel: "rgba(255,255,255,0.035)",
-        panelhi: "rgba(255,255,255,0.06)",
-        edge: "rgba(255,255,255,0.09)",
-        edgehi: "rgba(255,255,255,0.16)",
-        // Type
-        hi: "#f2f5f8",
-        mid: "#9aa7b4",
-        lo: "#5f6b78",
-        // Accent — warm amber, the "receipt paper" note, used for emphasis.
+        // Ground
+        base: "#ffffff",
+        base2: "#f7f8fa",
+        // Panels sit on the ground; borders are dark at very low alpha.
+        panel: "#ffffff",
+        panelhi: "#fbfcfd",
+        edge: "rgba(15,23,42,0.09)",
+        edgehi: "rgba(15,23,42,0.16)",
+        // Type — slate ramp, high contrast on white.
+        hi: "#0f172a",
+        mid: "#5b6675",
+        lo: "#8d97a5",
+        // Accent — warm amber, deepened so it passes contrast on white.
         amber: {
           300: "#fcd34d",
           400: "#fbbf24",
           500: "#f59e0b",
           600: "#d97706",
+          700: "#b45309",
         },
         // States
-        flag: "#fb7185", // needs review
-        flagdim: "rgba(251,113,133,0.12)",
-        ok: "#34d399",
-        okdim: "rgba(52,211,153,0.12)",
+        flag: "#e11d48", // needs review
+        flagdim: "#fff1f3",
+        ok: "#059669",
+        okdim: "#ecfdf5",
       },
       fontFamily: {
         sans: [
@@ -53,9 +54,12 @@ const config: Config = {
         xl2: "1.125rem",
       },
       boxShadow: {
-        lift: "0 1px 0 rgba(255,255,255,0.05) inset, 0 10px 30px -12px rgba(0,0,0,0.7)",
-        glow: "0 0 0 1px rgba(245,158,11,0.28), 0 12px 40px -12px rgba(245,158,11,0.35)",
-        flag: "0 0 0 1px rgba(251,113,133,0.28), 0 12px 40px -14px rgba(251,113,133,0.3)",
+        // Layered, tight shadows — the light-mode equivalent of "lifted".
+        lift: "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(15,23,42,0.12)",
+        liftup:
+          "0 2px 4px rgba(15,23,42,0.05), 0 16px 36px -14px rgba(15,23,42,0.18)",
+        glow: "0 0 0 1px rgba(245,158,11,0.35), 0 12px 32px -12px rgba(245,158,11,0.3)",
+        flag: "0 0 0 1px rgba(225,29,72,0.18), 0 12px 32px -16px rgba(225,29,72,0.25)",
       },
       keyframes: {
         rise: {
@@ -78,7 +82,7 @@ const config: Config = {
           "50%": { transform: "translateY(-6px)" },
         },
         pulseRing: {
-          "0%": { transform: "scale(0.9)", opacity: "0.7" },
+          "0%": { transform: "scale(0.9)", opacity: "0.6" },
           "70%": { transform: "scale(1.35)", opacity: "0" },
           "100%": { transform: "scale(1.35)", opacity: "0" },
         },
@@ -95,10 +99,6 @@ const config: Config = {
         float: "float 6s ease-in-out infinite",
         pulseRing: "pulseRing 2s cubic-bezier(0.4,0,0.6,1) infinite",
         countUp: "countUp 0.5s cubic-bezier(0.16,1,0.3,1) both",
-      },
-      backgroundImage: {
-        "grid-fade":
-          "linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px)",
       },
     },
   },

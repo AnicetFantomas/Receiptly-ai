@@ -67,7 +67,7 @@ export default function CapturePage() {
         </span>
         <h1 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
           Turn a photo into{" "}
-          <span className="bg-gradient-to-r from-amber-300 to-amber-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-amber-500 to-amber-700 bg-clip-text text-transparent">
             structured data
           </span>
         </h1>
@@ -112,17 +112,17 @@ export default function CapturePage() {
             {status === "loading" ? (
               <div className="animate-fade w-full max-w-[15rem]">
                 {/* The uploaded image with a scanning line passing over it. */}
-                <div className="relative mx-auto mb-5 h-40 w-32 overflow-hidden rounded-lg border border-edge bg-black/40">
+                <div className="relative mx-auto mb-5 h-40 w-32 overflow-hidden rounded-lg border border-edge bg-base2">
                   {preview && (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={preview}
                       alt=""
-                      className="h-full w-full object-cover opacity-60"
+                      className="h-full w-full object-cover opacity-80"
                     />
                   )}
-                  <div className="absolute inset-x-0 top-0 h-14 animate-scanline bg-gradient-to-b from-transparent via-amber-400/40 to-transparent" />
-                  <div className="absolute inset-0 ring-1 ring-inset ring-amber-400/30" />
+                  <div className="absolute inset-x-0 top-0 h-14 animate-scanline bg-gradient-to-b from-transparent via-amber-500/45 to-transparent" />
+                  <div className="absolute inset-0 ring-1 ring-inset ring-amber-500/40" />
                 </div>
                 <p className="text-sm font-medium">Reading your receipt…</p>
                 <div className="mx-auto mt-4 space-y-2">
@@ -134,13 +134,13 @@ export default function CapturePage() {
             ) : (
               <>
                 <span
-                  className={`mb-5 grid h-16 w-16 place-items-center rounded-2xl border border-edge bg-white/[0.04] transition-transform duration-500 ${
+                  className={`mb-5 grid h-16 w-16 place-items-center rounded-2xl border border-edge bg-base2 transition-transform duration-500 ${
                     dragging ? "scale-110" : "group-hover:scale-105 animate-float"
                   }`}
                 >
                   <svg
                     viewBox="0 0 24 24"
-                    className="h-7 w-7 text-amber-400"
+                    className="h-7 w-7 text-amber-600"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="1.8"
@@ -157,7 +157,7 @@ export default function CapturePage() {
                 </p>
                 <p className="mt-1.5 text-sm text-mid">
                   or{" "}
-                  <span className="text-amber-400 underline decoration-amber-400/40 underline-offset-4">
+                  <span className="text-amber-600 underline decoration-amber-400/40 underline-offset-4">
                     browse your files
                   </span>
                 </p>
@@ -189,7 +189,7 @@ export default function CapturePage() {
                 },
               ].map((step, i) => (
                 <li key={step.t} className="flex gap-3.5">
-                  <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-lg border border-edge bg-white/[0.04] font-mono text-xs text-amber-400">
+                  <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-lg border border-edge bg-base2 font-mono text-xs text-amber-600">
                     {i + 1}
                   </span>
                   <div>
@@ -201,7 +201,7 @@ export default function CapturePage() {
                 </li>
               ))}
             </ol>
-            <div className="mt-6 rounded-xl border border-edge bg-black/20 p-3.5">
+            <div className="mt-6 rounded-xl border border-edge bg-base2 p-3.5">
               <p className="text-xs leading-relaxed text-lo">
                 Totals are always kept per currency — Receiptly never adds
                 different currencies together.
@@ -223,7 +223,7 @@ export default function CapturePage() {
       {rejected && (
         <div className="animate-rise panel panel-lit overflow-hidden">
           <div className="flex flex-col items-center p-8 text-center sm:p-10">
-            <span className="mb-4 grid h-12 w-12 place-items-center rounded-xl border border-edge bg-white/[0.04] text-mid">
+            <span className="mb-4 grid h-12 w-12 place-items-center rounded-xl border border-edge bg-base2 text-mid">
               <svg
                 viewBox="0 0 24 24"
                 className="h-5 w-5"
@@ -343,7 +343,7 @@ export default function CapturePage() {
                 />
 
                 {result.notes && (
-                  <p className="mt-5 rounded-xl border border-edge bg-black/20 p-3.5 text-xs leading-relaxed text-mid">
+                  <p className="mt-5 rounded-xl border border-edge bg-base2 p-3.5 text-xs leading-relaxed text-mid">
                     <span className="font-medium text-hi">Note · </span>
                     {result.notes}
                   </p>

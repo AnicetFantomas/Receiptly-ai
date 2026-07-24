@@ -73,7 +73,7 @@ export default function ReceiptsPage() {
                 onClick={() => setFilter(f)}
                 className={`rounded-lg px-3.5 py-1.5 text-sm capitalize transition-all duration-200 ${
                   filter === f
-                    ? "bg-white/[0.08] text-hi"
+                    ? "bg-white shadow-sm text-hi"
                     : "text-mid hover:text-hi"
                 }`}
               >
@@ -131,10 +131,10 @@ export default function ReceiptsPage() {
       {/* Empty */}
       {receipts?.length === 0 && (
         <div className="panel panel-lit animate-rise p-12 text-center sm:p-16">
-          <span className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl border border-edge bg-white/[0.04]">
+          <span className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl border border-edge bg-base2">
             <svg
               viewBox="0 0 24 24"
-              className="h-7 w-7 text-amber-400"
+              className="h-7 w-7 text-amber-600"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.6"
@@ -177,7 +177,7 @@ export default function ReceiptsPage() {
                 r.needsReview ? "border-flag/25" : ""
               }`}
             >
-              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-edge bg-black/30">
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-edge bg-base2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={imageUrl(r.imagePath)}

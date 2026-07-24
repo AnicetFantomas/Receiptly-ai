@@ -22,7 +22,7 @@ export function ReceiptImage({ src, alt }: { src: string; alt: string }) {
           href={src}
           target="_blank"
           rel="noreferrer"
-          className="text-xs text-mid transition-colors hover:text-amber-400"
+          className="text-xs text-mid transition-colors hover:text-amber-600"
         >
           Full size ↗
         </a>

@@ -116,7 +116,7 @@ export default function SummaryPage() {
               {summary.byCurrency.map((c) => (
                 <div key={c.currency} className="panel panel-lit panel-hover p-6">
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs tracking-wider text-amber-400">
+                    <span className="font-mono text-xs tracking-wider text-amber-600">
                       {c.currency}
                     </span>
                     <span className="badge-mute">
@@ -147,7 +147,7 @@ export default function SummaryPage() {
                 return (
                   <div key={currency} className="panel panel-lit p-6">
                     <div className="mb-5 flex items-center gap-2">
-                      <span className="font-mono text-xs tracking-wider text-amber-400">
+                      <span className="font-mono text-xs tracking-wider text-amber-600">
                         {currency}
                       </span>
                       <div className="h-px flex-1 bg-edge" />
@@ -166,9 +166,9 @@ export default function SummaryPage() {
                               {formatMoney(v.total, v.currency)}
                             </span>
                           </div>
-                          <div className="h-1.5 overflow-hidden rounded-full bg-white/5">
+                          <div className="h-1.5 overflow-hidden rounded-full bg-base2">
                             <div
-                              className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-300 transition-[width] duration-700 ease-out"
+                              className="h-full rounded-full bg-gradient-to-r from-amber-600 to-amber-400 transition-[width] duration-700 ease-out"
                               style={{ width: `${(v.total / max) * 100}%` }}
                             />
                           </div>

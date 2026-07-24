@@ -13,16 +13,16 @@ export function Nav() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-edge/70 bg-base/70 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-edge bg-white/85 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="group flex items-center gap-2.5">
-          {/* Mark: a stylised receipt with a soft glow. */}
-          <span className="relative grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 shadow-[0_6px_18px_-6px_rgba(245,158,11,0.8)] transition-transform duration-300 group-hover:scale-105">
+          {/* Mark: a stylised receipt on the amber accent. */}
+          <span className="relative grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 shadow-[0_4px_12px_-4px_rgba(217,119,6,0.55)] transition-transform duration-300 group-hover:scale-105">
             <svg
               viewBox="0 0 24 24"
               className="h-4 w-4"
               fill="none"
-              stroke="#221603"
+              stroke="#ffffff"
               strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -49,11 +49,11 @@ export function Nav() {
                 href={link.href}
                 aria-current={active ? "page" : undefined}
                 className={`relative rounded-lg px-3 py-2 text-sm transition-colors duration-200 sm:px-4 ${
-                  active ? "text-hi" : "text-mid hover:text-hi"
+                  active ? "font-medium text-hi" : "text-mid hover:text-hi"
                 }`}
               >
                 {active && (
-                  <span className="absolute inset-0 rounded-lg border border-edge bg-white/[0.06]" />
+                  <span className="absolute inset-0 rounded-lg border border-edge bg-base2 shadow-sm" />
                 )}
                 <span className="relative">{link.label}</span>
               </Link>
