@@ -2,7 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { Pool, PoolClient } from 'pg';
 import type { Receipt } from '../extract/receipt.schema';
-import type { ReceiptStore, StoredReceipt } from './receipt-store.interface';
+import type {
+  ReceiptCorrection,
+  ReceiptStore,
+  StoredReceipt,
+} from './receipt-store.interface';
 import { computeNeedsReview, normalizeVendor } from './review';
 
 // Shape of a joined receipt row coming back from Postgres. NUMERIC columns
@@ -32,8 +36,10 @@ export class PostgresReceiptStore implements ReceiptStore {
   constructor(@Inject('DB_POOL') private readonly pool: Pool) {}
 
   async save(receipt: Receipt, imagePath: string): Promise<StoredReceipt> {
-    const normalized: Receipt = {
-      ...receipt,
+    // Drop the intake-gate fields: a filed record is a receipt by definition.
+    const { isReceipt: _i, rejectionReason: _r, ...rest } = receipt;
+    const normalized = {
+      ...rest,
       vendor: normalizeVendor(receipt.vendor),
     };
     const stored: StoredReceipt = {
@@ -123,8 +129,11 @@ export class PostgresReceiptStore implements ReceiptStore {
   }
 
   /** Replace a receipt's fields and line items, recomputing needs_review. */
-  async update(id: string, receipt: Receipt): Promise<StoredReceipt | null> {
-    const normalized: Receipt = {
+  async update(
+    id: string,
+    receipt: ReceiptCorrection,
+  ): Promise<StoredReceipt | null> {
+    const normalized = {
       ...receipt,
       vendor: normalizeVendor(receipt.vendor),
     };

@@ -9,6 +9,13 @@ import { Receipt } from './receipt.schema';
 /** Thrown when the model refuses, is unreachable, or returns nothing usable. */
 export class ExtractionError extends Error {}
 
+/**
+ * Thrown when the image simply isn't a receipt. Distinct from ExtractionError
+ * because nothing went wrong — the upload is just not something we can file.
+ * Maps to a 422, and the caller stores nothing.
+ */
+export class NotAReceiptError extends Error {}
+
 // Only these are accepted by the vision endpoint.
 const MIME_TYPES: Record<string, string> = {
   '.png': 'image/png',
@@ -69,6 +76,14 @@ export class ExtractService {
       throw new ExtractionError('Model returned no parsable receipt data.');
     }
 
+    // The image isn't a receipt: reject before anything is stored.
+    if (!message.parsed.isReceipt) {
+      throw new NotAReceiptError(
+        message.parsed.rejectionReason?.trim() ||
+          "This image doesn't look like a receipt.",
+      );
+    }
+
     return message.parsed;
   }
 
@@ -94,7 +109,17 @@ Rules:
 - Currency should be the 3-letter code (RWF, USD, EUR...).
 - RWF has no decimal subunit. Never return decimal values for RWF amounts.
 - If the currency is not printed on the receipt, use "UNKNOWN". Do not infer it from the vendor, location, or context.
-- Read digit groups carefully: "10,686" is ten thousand six hundred eighty-six, not 106.86.`,
+- Read digit groups carefully: "10,686" is ten thousand six hundred eighty-six, not 106.86.
+
+First, decide whether the image is actually a receipt, invoice, or bill.
+- If it IS, set isReceipt to true, leave rejectionReason as "", and extract as above.
+- If it is NOT (a person, a pet, a landscape, a screenshot, a random object, a
+  blank or unreadable page), set isReceipt to false and put a short, plain
+  description of what you actually see in rejectionReason, e.g. "This looks like
+  a photo of a dog, not a receipt." In that case do NOT invent any values: use
+  "" for vendor and notes, "" for date, "UNKNOWN" for currency, 0 for total, an
+  empty lineItems array, and "low" for confidence. Never guess a vendor or an
+  amount for an image that isn't a receipt.`,
         },
         {
           role: 'user',

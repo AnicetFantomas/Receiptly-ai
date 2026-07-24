@@ -1,8 +1,9 @@
 import { computeNeedsReview, reviewReasons, normalizeVendor } from './review';
-import type { Receipt } from '../extract/receipt.schema';
+import type { Reviewable } from './review';
 
 // A clean receipt that passes every rule; each test tweaks one field.
-const clean: Receipt = {
+// Typed as Reviewable — the rules only read the scoring fields.
+const clean: Reviewable & { vendor: string; date: string; notes: string } = {
   vendor: 'Java House',
   date: '2026-07-01',
   currency: 'KES',
@@ -58,7 +59,7 @@ describe('reviewReasons', () => {
   });
 
   it('lists every failing rule at once', () => {
-    const bad: Receipt = {
+    const bad: Reviewable = {
       ...clean,
       confidence: 'low',
       currency: 'UNKNOWN',

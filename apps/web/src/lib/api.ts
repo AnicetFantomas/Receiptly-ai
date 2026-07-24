@@ -10,6 +10,17 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * The upload was understood but isn't a receipt (HTTP 422). Not a failure —
+ * nothing was stored, and the message describes what the model actually saw.
+ */
+export class NotAReceiptError extends ApiError {
+  constructor(message: string) {
+    super(message);
+    this.name = "NotAReceiptError";
+  }
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let res: Response;
   try {
@@ -33,6 +44,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     } catch {
       /* non-JSON error body — keep the generic message */
     }
+    if (res.status === 422) throw new NotAReceiptError(detail);
     throw new ApiError(detail);
   }
 

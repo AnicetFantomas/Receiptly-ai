@@ -15,6 +15,8 @@ const DATABASE_URL =
 const TEST_SCHEMA = `test_${Date.now()}`;
 
 const sample: Receipt = {
+  isReceipt: true,
+  rejectionReason: '',
   vendor: '  Corner   Store ', // deliberately messy, to prove normalization
   date: '2026-07-10',
   currency: 'USD',
@@ -138,5 +140,16 @@ describe('PostgresReceiptStore (integration)', () => {
 
   dbit('returns false when deleting a missing receipt', async () => {
     expect(await store.remove('rcpt_does_not_exist')).toBe(false);
+  });
+
+  dbit('does not persist the intake-gate fields', async () => {
+    const saved = await store.save(sample, 'uploads/gate.jpg');
+    // isReceipt/rejectionReason gate the upload; they aren't part of a record.
+    expect(saved).not.toHaveProperty('isReceipt');
+    expect(saved).not.toHaveProperty('rejectionReason');
+
+    const found = await store.findOne(saved.id);
+    expect(found).not.toHaveProperty('isReceipt');
+    expect(found).not.toHaveProperty('rejectionReason');
   });
 });

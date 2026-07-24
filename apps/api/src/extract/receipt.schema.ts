@@ -11,6 +11,13 @@ export const LineItem = z.object({
 });
 
 export const Receipt = z.object({
+  // Added after the original tuning: structured outputs force the model to
+  // return every field, so without an explicit flag it has no way to say "this
+  // photo isn't a receipt" — it would invent a vendor and total instead. When
+  // this is false the API rejects the upload and stores nothing.
+  isReceipt: z.boolean(),
+  // Why it isn't a receipt (e.g. "a photo of a cat"). Empty when isReceipt.
+  rejectionReason: z.string(),
   vendor: z.string(),
   date: z.string(), // ISO format: YYYY-MM-DD
   // 'UNKNOWN' must stay in this list: the prompt tells the model to use it

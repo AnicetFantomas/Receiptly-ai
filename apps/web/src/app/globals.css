@@ -3,19 +3,200 @@
 @tailwind utilities;
 
 :root {
-  /* System font stacks — no network font fetch, keeps the build self-contained
-     and the ledger feel comes from layout and color, not a bespoke typeface. */
-  --font-inter: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", "Menlo", "Consolas", monospace;
 }
 
-body {
-  @apply bg-paper text-ink antialiased;
+html {
+  scroll-behavior: smooth;
 }
 
-/* Tabular figures make columns of money line up like a real ledger. */
-.tabular {
+body {
+  @apply bg-base text-hi antialiased;
   font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
+  min-height: 100vh;
+}
+
+/* ── Ambient background ─────────────────────────────────────
+   Two soft colour fields plus a fine grid, fixed behind everything. Gives the
+   app depth without any imagery. */
+.bg-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      70rem 40rem at 12% -8%,
+      rgba(245, 158, 11, 0.13),
+      transparent 60%
+    ),
+    radial-gradient(
+      60rem 36rem at 92% 6%,
+      rgba(56, 132, 255, 0.11),
+      transparent 62%
+    ),
+    linear-gradient(180deg, #0b0f14 0%, #0a0e13 60%, #090d11 100%);
+}
+
+.bg-ambient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+  /* Fade the grid out toward the bottom so it never competes with content. */
+  -webkit-mask-image: radial-gradient(
+    58rem 42rem at 50% 0%,
+    #000 25%,
+    transparent 78%
+  );
+  mask-image: radial-gradient(
+    58rem 42rem at 50% 0%,
+    #000 25%,
+    transparent 78%
+  );
+}
+
+@layer components {
+  /* ── Surfaces ───────────────────────────────────────────── */
+  .panel {
+    @apply rounded-xl2 border border-edge bg-panel shadow-lift backdrop-blur-xl;
+  }
+  .panel-hover {
+    @apply transition-all duration-300 hover:border-edgehi hover:bg-panelhi;
+  }
+
+  /* Gradient hairline along the top edge — the detail that makes a dark panel
+     read as lit rather than flat. */
+  .panel-lit {
+    position: relative;
+  }
+  .panel-lit::before {
+    content: "";
+    position: absolute;
+    inset-inline: 1.25rem;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.22),
+      transparent
+    );
+  }
+
+  /* ── Buttons ────────────────────────────────────────────── */
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl
+           px-4 py-2.5 text-sm font-medium transition-all duration-200
+           active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn text-base;
+    background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    color: #221603;
+    box-shadow: 0 6px 20px -8px rgba(245, 158, 11, 0.6);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 10px 28px -8px rgba(245, 158, 11, 0.75);
+    filter: brightness(1.06);
+  }
+  .btn-ghost {
+    @apply btn border border-edge text-mid hover:border-edgehi hover:text-hi;
+  }
+  .btn-danger {
+    @apply btn border border-transparent text-lo hover:border-flag/40 hover:text-flag;
+  }
+
+  /* ── Inputs ─────────────────────────────────────────────── */
+  .input {
+    @apply w-full rounded-xl border border-edge bg-black/25 px-3 py-2.5 text-sm
+           text-hi outline-none transition-all duration-200
+           placeholder:text-lo focus:border-amber-500/60
+           focus:ring-4 focus:ring-amber-500/10;
+  }
+  select.input {
+    @apply cursor-pointer appearance-none bg-base2;
+  }
+
+  /* ── Badges ─────────────────────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1
+           text-[0.6875rem] font-semibold tracking-wide;
+  }
+  .badge-flag {
+    @apply badge bg-flagdim text-flag ring-1 ring-inset ring-flag/25;
+  }
+  .badge-ok {
+    @apply badge bg-okdim text-ok ring-1 ring-inset ring-ok/25;
+  }
+  .badge-mute {
+    @apply badge bg-white/5 text-mid ring-1 ring-inset ring-white/10;
+  }
+
+  /* ── Skeleton shimmer ───────────────────────────────────── */
+  .skeleton {
+    @apply relative overflow-hidden rounded-lg bg-white/5;
+  }
+  .skeleton::after {
+    content: "";
+    @apply absolute inset-0 -translate-x-full;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.07),
+      transparent
+    );
+    animation: shimmer 1.8s infinite;
+  }
+
+  /* Dotted leader between an item and its price — the one receipt cue kept,
+     because it genuinely aids scanning long item lists. */
+  .leader {
+    @apply flex items-baseline gap-3;
+  }
+  .leader > .leader-fill {
+    @apply min-w-[1rem] flex-1 self-center;
+    height: 1px;
+    background-image: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.22) 1px,
+      transparent 1.2px
+    );
+    background-size: 7px 1px;
+    background-repeat: repeat-x;
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Staggered entrance for lists. */
+  .stagger > * {
+    animation: rise 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .stagger > *:nth-child(1) { animation-delay: 0.02s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.06s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.1s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.14s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.18s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.22s; }
+  .stagger > *:nth-child(7) { animation-delay: 0.26s; }
+  .stagger > *:nth-child(8) { animation-delay: 0.3s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

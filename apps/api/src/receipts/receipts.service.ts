@@ -1,7 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import * as fs from 'node:fs';
 import { ExtractService } from '../extract/extract.service';
 import { PostgresReceiptStore } from './postgres-receipt-store';
-import type { StoredReceipt } from './receipt-store.interface';
+import type {
+  ReceiptCorrection,
+  StoredReceipt,
+} from './receipt-store.interface';
 import type { Receipt } from '../extract/receipt.schema';
 import { reviewReasons } from './review';
 
@@ -22,7 +26,15 @@ export class ReceiptsService {
 
   /** Extract from an uploaded image, then store. needs_review is set in save(). */
   async createFromImage(imagePath: string): Promise<ReceiptWithReasons> {
-    const extracted = await this.extract.extractReceipt(imagePath);
+    let extracted: Receipt;
+    try {
+      extracted = await this.extract.extractReceipt(imagePath);
+    } catch (err) {
+      // Nothing was stored, so don't leave the upload orphaned on disk. This
+      // covers rejected non-receipts as well as extraction failures.
+      fs.rmSync(imagePath, { force: true });
+      throw err;
+    }
     const stored = await this.store.save(extracted, imagePath);
     return this.withReasons(stored);
   }
@@ -39,7 +51,10 @@ export class ReceiptsService {
   }
 
   /** Apply human corrections; needs_review is recomputed inside the store. */
-  async update(id: string, receipt: Receipt): Promise<ReceiptWithReasons> {
+  async update(
+    id: string,
+    receipt: ReceiptCorrection,
+  ): Promise<ReceiptWithReasons> {
     const updated = await this.store.update(id, receipt);
     if (!updated) throw new NotFoundException(`Receipt ${id} not found`);
     return this.withReasons(updated);

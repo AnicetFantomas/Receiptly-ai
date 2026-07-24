@@ -1,5 +1,13 @@
 import type { Receipt } from '../extract/receipt.schema';
 
+// The review rules only read these fields, so they apply equally to a freshly
+// extracted Receipt and an already-stored one (which drops the intake-gate
+// fields). Keeping the parameter narrow means neither caller has to fake them.
+export type Reviewable = Pick<
+  Receipt,
+  'confidence' | 'currency' | 'total' | 'lineItems'
+>;
+
 /**
  * The single source of truth for the review rules. Used on save and re-run on
  * every PATCH, so correcting a receipt actually clears (or re-raises) its flag.
@@ -9,7 +17,7 @@ import type { Receipt } from '../extract/receipt.schema';
  *   - currency is 'UNKNOWN'
  *   - line items don't sum to the stated total (off by more than 1)
  */
-export function computeNeedsReview(receipt: Receipt): boolean {
+export function computeNeedsReview(receipt: Reviewable): boolean {
   const sum = receipt.lineItems.reduce((s, i) => s + i.price * i.quantity, 0);
   return (
     receipt.confidence === 'low' ||
@@ -19,7 +27,7 @@ export function computeNeedsReview(receipt: Receipt): boolean {
 }
 
 /** Human-readable reasons a receipt is flagged — drives the review UI. */
-export function reviewReasons(receipt: Receipt): string[] {
+export function reviewReasons(receipt: Reviewable): string[] {
   const reasons: string[] = [];
   if (receipt.confidence === 'low') {
     reasons.push('The model had low confidence in this reading.');

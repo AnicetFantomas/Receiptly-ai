@@ -1,23 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import "./globals.css";
+import { Nav } from "@/components/Nav";
 
 export const metadata: Metadata = {
-  title: "Receiptly",
+  title: "Receiptly — Receipt capture & spend tracking",
   description:
     "Photograph a receipt, extract structured data, and track spending.",
 };
-
-function NavLink({ href, label }: { href: string; label: string }) {
-  return (
-    <Link
-      href={href}
-      className="rounded-md px-3 py-1.5 text-sm font-medium text-faint transition-colors hover:bg-moss-50 hover:text-ink"
-    >
-      {label}
-    </Link>
-  );
-}
 
 export default function RootLayout({
   children,
@@ -27,22 +16,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans">
-        <header className="border-b border-line bg-card/80 backdrop-blur">
-          <div className="mx-auto flex max-w-ledger items-center justify-between px-4 py-3">
-            <Link
-              href="/"
-              className="font-mono text-lg font-semibold tracking-tight text-ink"
-            >
-              Receiptly
-            </Link>
-            <nav className="flex items-center gap-1">
-              <NavLink href="/" label="Upload" />
-              <NavLink href="/receipts" label="Receipts" />
-              <NavLink href="/summary" label="Summary" />
-            </nav>
-          </div>
-        </header>
-        <main className="mx-auto max-w-ledger px-4 py-8">{children}</main>
+        {/* Fixed ambient field behind everything. */}
+        <div className="bg-ambient" aria-hidden />
+
+        <div className="flex min-h-screen flex-col">
+          <Nav />
+          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 lg:py-12">
+            {children}
+          </main>
+          <footer className="border-t border-edge/60 py-6">
+            <p className="mx-auto max-w-6xl px-4 text-xs text-lo sm:px-6">
+              Receiptly · vision extraction with human review
+            </p>
+          </footer>
+        </div>
       </body>
     </html>
   );

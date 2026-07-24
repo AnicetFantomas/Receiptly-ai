@@ -51,8 +51,10 @@ export class JsonReceiptStore implements ReceiptStore {
 
   async save(receipt: Receipt, imagePath: string): Promise<StoredReceipt> {
     const run = this.queue.then(() => {
-      const normalized: Receipt = {
-        ...receipt,
+      // Drop the intake-gate fields: a filed record is a receipt by definition.
+      const { isReceipt: _i, rejectionReason: _r, ...rest } = receipt;
+      const normalized = {
+        ...rest,
         vendor: normalizeVendor(receipt.vendor),
       };
       const stored: StoredReceipt = {
