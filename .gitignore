@@ -1,4 +1,12 @@
 node_modules/
 .env
+.env.local
 dist/
+.next/
+*.tsbuildinfo
+*.log
+
+# runtime data
+uploads/
+data/
 images/

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -20,6 +20,7 @@ const MIME_TYPES: Record<string, string> = {
 
 @Injectable()
 export class ExtractService {
+  private readonly logger = new Logger('ExtractService');
   private client: OpenAI | undefined;
 
   constructor(private readonly config: ConfigService) {}
@@ -55,8 +56,29 @@ export class ExtractService {
     // Read the image and turn it into base64
     const base64Image = fs.readFileSync(imagePath).toString('base64');
 
-    const response = await this.getClient().chat.completions.parse({
-      model: 'gpt-4o-mini',
+    const response = await this.callModel(mimeType, base64Image);
+
+    const message = response.choices[0]?.message;
+    if (!message) {
+      throw new ExtractionError('Model returned no choices.');
+    }
+    if (message.refusal) {
+      throw new ExtractionError(`Model refused the request: ${message.refusal}`);
+    }
+    if (!message.parsed) {
+      throw new ExtractionError('Model returned no parsable receipt data.');
+    }
+
+    return message.parsed;
+  }
+
+  // Isolated so any OpenAI SDK failure (bad key, rate limit, network, 5xx) is
+  // converted into an ExtractionError → a clean 502, instead of leaking the
+  // upstream message (which can include the API key) through a generic 500.
+  private async callModel(mimeType: string, base64Image: string) {
+    try {
+      return await this.getClient().chat.completions.parse({
+        model: 'gpt-4o-mini',
       temperature: 0,
       messages: [
         {
@@ -86,19 +108,18 @@ Rules:
         },
       ],
       response_format: zodResponseFormat(Receipt, 'receipt'),
-    });
-
-    const message = response.choices[0]?.message;
-    if (!message) {
-      throw new ExtractionError('Model returned no choices.');
+      });
+    } catch (err) {
+      // Our own pre-flight errors (unreachable file, etc.) pass through as-is.
+      if (err instanceof ExtractionError) throw err;
+      // Log the upstream detail (may include key/URL) server-side only; return a
+      // generic message to the client so nothing sensitive leaks in the 502.
+      this.logger.error(
+        `OpenAI request failed: ${err instanceof Error ? err.message : String(err)}`,
+      );
+      throw new ExtractionError(
+        'The extraction service is unavailable. Check the API key and try again.',
+      );
     }
-    if (message.refusal) {
-      throw new ExtractionError(`Model refused the request: ${message.refusal}`);
-    }
-    if (!message.parsed) {
-      throw new ExtractionError('Model returned no parsable receipt data.');
-    }
-
-    return message.parsed;
   }
 }
